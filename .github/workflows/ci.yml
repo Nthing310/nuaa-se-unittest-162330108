@@ -1,0 +1,33 @@
+name: 单元测试持续集成-162330108
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: 构建与冒烟测试
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 检出项目代码
+        uses: actions/checkout@v4
+
+      - name: 配置JDK 11.0.30 LTS
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: 执行单元测试（冒烟测试）
+        run: mvn clean test
+
+      - name: 上传测试报告
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports-162330108
+          path: target/surefire-reports/
